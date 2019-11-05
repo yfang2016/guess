@@ -74,9 +74,10 @@ int main (int argc, char *argv[])
 {
     char target[] = {0,0,0,0};
     int x, y, i;
+    time_t t1, t2;
 
     generate4digits(target);
-
+    t1 = time(NULL);
     printf("Please give your initial guess:\n");
     while(1) {
         scanf("%x", &x);
@@ -92,5 +93,8 @@ int main (int argc, char *argv[])
             printf("%dA%dB\n", (y>>4), y&15);
         }
     }
+    t2 = time(NULL);
+    printf("%.24s\n",ctime(&t1));
+    printf("%.24s\n",ctime(&t2));
     return EXIT_SUCCESS;
 }			/* ----------  end of function main  ---------- */
