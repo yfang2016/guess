@@ -16,11 +16,9 @@
  * ============================================================================
  */
 
-
 #include <stdlib.h>
 #include <stdio.h>
-
-
+#include <time.h>
 
 /* 
 * ===  FUNCTION  =============================================================
@@ -31,6 +29,10 @@
 void generate4digits (char *p)
 {
     int i = 0;
+    time_t t;
+
+    t = time(NULL);
+    srand(t);
     for (i = 0; i < 4; i++) {
         *p++ = rand()%10;
     }
@@ -47,14 +49,17 @@ int analysis(int x, const char t[])
         guess[i] = x & 0xf;
         if (guess[i] > 9)
             return 0x100;
-        hit_a = (guess[i] == t[i]);
+        if (guess[i] == t[i]) {
+            hit_a++;
+            guess[i] = 'x';   /* mark not to check for position */
+        };
         x >>= 4;
     }
 
     for (i = 0; i < 4; i++) {
         for (j = 0; j < 4; j++) {
-            if (j == i) continue;
-            hit_b = (guess[i] == t[j]);
+            if ((j == i) || (guess[i] == 'x')) continue;
+            hit_b += (guess[j] == t[i]);
         }
     }
     return (hit_a << 4) | hit_b;
@@ -68,7 +73,7 @@ int analysis(int x, const char t[])
 int main (int argc, char *argv[])
 {
     char target[] = {0,0,0,0};
-    int x, y;
+    int x, y, i;
 
     generate4digits(target);
 
